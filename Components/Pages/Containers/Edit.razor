@@ -1,0 +1,57 @@
+﻿@page "/containers/edit/{id:int}"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject ContainerRepository ContainerService
+@inject NavigationManager NavigationManager
+@code {
+    [Parameter] public int id { get; set; }
+    private Container existingContainer;
+
+    protected override void OnInitialized()
+    {
+        existingContainer = ContainerService.GetContainerById(id);
+    }
+
+    private void HandleSubmit()
+    {
+        ContainerService.UpdateContainer(existingContainer);
+        NavigationManager.NavigateTo("/containers");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/containers");
+    }
+}
+
+<h3>Edit Container</h3>
+
+@if (existingContainer != null)
+{
+        <EditForm Model="existingContainer" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="number" class="form-label">Number</label>
+                <InputText id="number" class="form-control" @bind-Value="existingContainer.Number" />
+            </div>
+
+            <div class="mb-3">
+                <label for="type" class="form-label">Type</label>
+                <InputText id="type" class="form-control" @bind-Value="existingContainer.Type" />
+            </div>
+
+            <div class="mb-3">
+                <label for="size" class="form-label">Size</label>
+                <InputNumber id="size" class="form-control" @bind-Value="existingContainer.Size" />
+            </div>
+
+            <button class="btn btn-success" type="submit">Save Changes</button>
+            <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        </EditForm>
+}
+else
+{
+        <p>Loading...</p>
+}

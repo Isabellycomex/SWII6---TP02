@@ -1,0 +1,66 @@
+﻿@page "/containers/create"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject ContainerRepository ContainerRepository
+@inject NavigationManager NavigationManager
+
+<div class="container my-3">
+    <h3>Criar novo container</h3>
+
+    <EditForm Model="newContainer" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="number" class="form-label">Número</label>
+            <InputText id="number" class="form-control" @bind-Value="newContainer.Number" />
+            <ValidationMessage For="@(() => newContainer.Number)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="type" class="form-label">Tipo</label>
+            <InputSelect id="type" class="form-control" @bind-Value="newContainer.Type">
+                <option value="Dry Box">Dry Box</option>
+                <option value="Dry/High Cube">Dry/High Cube</option>
+                <option value="Reefer">Reefer</option>
+                <option value="Open Top">Open Top</option>
+                <option value="Flat Rack">Flat Rack</option>
+                <option value="Plataform">Plataform</option>
+                <option value="Tank">Tank</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => newContainer.Type)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="size" class="form-label">Tamanho</label>
+            <InputSelect id="size" class="form-control" @bind-Value="newContainer.Size">
+                <option value="20">20</option>
+                <option value="40">40</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => newContainer.Size)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="billOfLadingId" class="form-label">ID da Bill Of Lading</label>
+            <InputNumber id="billOfLadingId" class="form-control" @bind-Value="newContainer.BillOfLadingId" />
+            <ValidationMessage For="@(() => newContainer.BillOfLadingId)" />
+        </div>
+
+        <button class="btn btn-success" type="submit">Criar</button>
+    </EditForm>
+</div>
+
+@code {
+    private Container newContainer = new Container();
+
+    private void HandleSubmit()
+    {
+        ContainerRepository.AddContainer(newContainer);
+        NavigationManager.NavigateTo("/containers");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/containers");
+    }
+}

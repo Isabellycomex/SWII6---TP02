@@ -1,0 +1,57 @@
+﻿@page "/bills/edit/{id:int}"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject BillRepository BillRepository
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter] public int id { get; set; }
+    private BillOfLading existingBill;
+
+    protected override void OnInitialized()
+    {
+        existingBill = BillRepository.GetBillById(id);
+    }
+
+    private void HandleSubmit()
+    {
+        BillRepository.UpdateBill(existingBill);
+        NavigationManager.NavigateTo("/bills");
+    }
+}
+
+<div class="container text-center my-3">
+    <h3>Edição de Bill of Lading</h3>
+</div>
+
+@if (existingBill != null)
+{
+    <div class="container">
+            <EditForm Model="existingBill" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="number" class="form-label">Number</label>
+                    <InputText id="number" class="form-control" @bind-Value="existingBill.Number" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="consignee" class="form-label">Consignee</label>
+                    <InputText id="consignee" class="form-control" @bind-Value="existingBill.Consignee" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="ship" class="form-label">Ship</label>
+                    <InputText id="ship" class="form-control" @bind-Value="existingBill.Ship" />
+                </div>
+
+                <button class="btn btn-success" type="submit">Save Changes</button>
+            </EditForm>
+    </div>
+        
+}
+else
+{
+        <p>Loading...</p>
+}

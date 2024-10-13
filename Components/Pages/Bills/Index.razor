@@ -1,0 +1,73 @@
+﻿@page "/bills"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject BillRepository BillRepository
+@inject NavigationManager NavigationManager
+
+<div class="container text-center my-3">
+    <h1>Listagem de Bill of Lading</h1>
+</div>
+
+<div class="container text-end">
+    <button class="btn btn-success mb-3" @onclick="CreateNew" >Nova Bill of Lading</button>
+</div>
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Consignee</th>
+                <th>Navio</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+                @foreach (var bill in bills)
+                {
+                        <tr>
+                            <td>@bill.Number</td>
+                            <td>@bill.Consignee</td>
+                            <td>@bill.Ship</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="() => Edit(bill.Id)">Editar</button>
+                                <button class="btn btn-danger" @onclick="() => Delete(bill.Id)">Excluir</button>
+                                <button class="btn btn-secondary" @onclick="() => SeeDetails(bill.Id)">Detalhes</button>
+                            </td>
+                        </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<BillOfLading> bills;
+
+    protected override void OnInitialized()
+    {
+        bills = BillRepository.GetAllBills();
+    }
+
+    private void CreateNew()
+    {
+        NavigationManager.NavigateTo("/bills/create");
+    }
+
+    private void Edit(int id)
+    {
+        NavigationManager.NavigateTo($"/bills/edit/{id}");
+    }
+
+    private void Delete(int id)
+    {
+        BillRepository.DeleteBill(id);
+        bills = BillRepository.GetAllBills();
+    }
+
+    private void SeeDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/bills/details/{id}");
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/bills/details/{id:int}"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject BillRepository BillRepository
+@code {
+    [Parameter] public int id { get; set; }
+    private BillOfLading selectedBill;
+
+    protected override void OnInitialized()
+    {
+        selectedBill = BillRepository.GetBillById(id);
+        var containers = BillRepository.GetAllContainersWithId(id);
+
+        foreach (Container container in containers)
+        {
+            selectedBill.Containers.Add(container);
+        }
+    }
+}
+
+<div class="container my-3">
+    <h3>Bill of Lading Details</h3>
+
+    @if (selectedBill != null)
+    {
+        <div class="mb-3">
+            <h4>Número da BL: @selectedBill.Number</h4>
+            <p><strong>Consignee:</strong> @selectedBill.Consignee</p>
+            <p><strong>Navio:</strong> @selectedBill.Ship</p>
+        </div>
+
+        <h4>Contêineres</h4>
+
+        @if (selectedBill.Containers.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Número do Container</th>
+                        <th>Tipo</th>
+                        <th>Tamanho</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var container in selectedBill.Containers)
+                    {
+                        <tr>
+                            <td>@container.Number</td>
+                            <td>@container.Type</td>
+                            <td>@container.Size</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Não há contêineres associados a essa Bill Of Lading</p>
+        }
+    }
+    else
+    {
+        <p>Carregando detalhes da Bill Of Lading...</p>
+    }
+
+</div>

@@ -1,0 +1,75 @@
+﻿@page "/containers"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject ContainerRepository ContainerRepository
+@inject NavigationManager NavigationManager
+
+<div class="container text-center my-3">
+    <h1>Listagem de Containers</h1>
+</div>
+
+<div class="container text-end">
+    <button class="btn btn-success mb-3" @onclick="CreateNew" >Novo Container</button>
+</div>
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Tipo</th>
+                <th>Tamanho</th>
+                <th>ID da Bill Of Lading</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+                @foreach (var container in containers)
+                {
+                        <tr>
+                            <td>@container.Number</td>
+                            <td>@container.Type</td>
+                            <td>@container.Size</td>
+                            <td>@container.BillOfLadingId</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick="() => Edit(container.Id)">Editar</button>
+                                <button class="btn btn-danger" @onclick="() => Delete(container.Id)">Excluir</button>
+                                <button class="btn btn-secondary" @onclick="() => SeeDetails(container.BillOfLadingId)">Ver BL</button>
+                            </td>
+                        </tr>
+                }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<Container> containers;
+
+    protected override void OnInitialized()
+    {
+        containers = ContainerRepository.GetAllContainers();
+    }
+
+    private void CreateNew()
+    {
+        NavigationManager.NavigateTo("/containers/create");
+    }
+
+    private void Edit(int id)
+    {
+        NavigationManager.NavigateTo($"/containers/edit/{id}");
+    }
+
+    private void Delete(int id)
+    {
+        ContainerRepository.DeleteContainer(id);
+        containers = ContainerRepository.GetAllContainers();
+    }
+
+    private void SeeDetails(int id)
+    {
+        NavigationManager.NavigateTo($"/bills/details/{id}");
+    }
+}

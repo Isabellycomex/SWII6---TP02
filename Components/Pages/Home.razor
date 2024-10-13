@@ -1,0 +1,28 @@
+﻿@page "/"
+@inject NavigationManager Nav
+
+<div class="container text-center my-5">
+    <h3>Sistema Aduaneiro</h3>
+    <p>Selecione uma opção:</p>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-4">
+            <button class="btn btn-primary btn-lg w-100" @onclick="NavigateToBills">Gerenciar Bill of Ladings</button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-secondary btn-lg w-100" @onclick="NavigateToContainers">Gerenciar Containers</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    public void NavigateToBills()
+    {
+        Nav.NavigateTo("/bills");
+    }
+
+    public void NavigateToContainers()
+    {
+        Nav.NavigateTo("/containers");
+    }
+}

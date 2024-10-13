@@ -1,0 +1,48 @@
+﻿@page "/bills/create"
+@using CustomsSystem.Data.Repositories
+@using CustomsSystem.Models
+@inject BillRepository BillRepository
+@inject NavigationManager NavigationManager
+
+<div class="container text-center my-3">
+    <h3>Criar nova Bill of Lading</h3>
+</div>
+
+<div class="container">
+    <EditForm Model="newBill" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="number" class="form-label">Número</label>
+            <InputText id="number" class="form-control" @bind-Value="newBill.Number" />
+        </div>
+
+        <div class="mb-3">
+            <label for="consignee" class="form-label">Consignee</label>
+            <InputText id="consignee" class="form-control" @bind-Value="newBill.Consignee" />
+        </div>
+
+        <div class="mb-3">
+            <label for="ship" class="form-label">Navio</label>
+            <InputText id="ship" class="form-control" @bind-Value="newBill.Ship" />
+        </div>
+
+        <button class="btn btn-success" type="submit">Criar</button>
+    </EditForm>
+</div>
+
+@code {
+    private BillOfLading newBill = new BillOfLading();
+
+    private void HandleSubmit()
+    {
+        BillRepository.AddBill(newBill);
+        NavigationManager.NavigateTo("/bills");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/bills");
+    }
+}
